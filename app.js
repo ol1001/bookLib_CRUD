@@ -15,12 +15,15 @@ MongoClient.connect('mongodb://localhost:27017/crudapp', function(err, db){
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    app.get('/', function(req, res, next){
-        res.sendFile('/ozzy/web/crud-book/app/public/view/read.html');
+    app.get('/getbook', function(req, res){
+        var query = {};
+        dbCollection.find(query).toArray(function(err, docs) {
+            if(err) throw err;
+            res.json(docs);
+        });
     });
 
     app.post('/save', function(req, res) {
-
         var newBook = req.body;
         dbCollection.insert(newBook, function(err, inserted){
             if(err) throw err;
@@ -30,43 +33,27 @@ MongoClient.connect('mongodb://localhost:27017/crudapp', function(err, db){
         });
     });
 
-    app.post('/update', function(req,res){
+    app.delete('/delete/:id', function(req, res){
+        var itemForDeleting = req.params.id;
+        dbCollection.remove({_id: ObjectID(itemForDeleting)}, function(err){
+            res.send(
+                (err === null) ? {msg: ''} : {msg: err}
+            );
+        });
+    });
 
-        dbCollection.update({_id:ObjectID(req.body._id)},
+   app.post('/update/:id', function(req,res){
+       var itemForUpdating = req.params.id;
+        dbCollection.update({_id:ObjectID(itemForUpdating)},
             {'title':req.body.title,
-             'author':req.body.author,
-             'genre':req.body.genre,
-             'pages':req.body.pages,
-             'published':req.body.published
-            },function(err, updated){
-                if(err) throw err;
-                res.send("some");
+                'author':req.body.author,
+                'genre':req.body.genre,
+                'published':req.body.published
+            },function(err){
+                res.send(
+                    (err === null) ? {msg: ''} : {msg: err}
+                );
             });
-    });
-
-    app.get('/getbook', function(req, res){
-        var query = {};
-        var projection = {'_id':1, 'title':1, 'author':1};
-        dbCollection.find(query, projection).toArray(function(err, docs) {
-            if(err) throw err;
-            res.json(docs);
-        });
-    });
-
-    app.get('/getbook/:id', function(req,res){
-        dbCollection.find({_id:ObjectID(req.params.id)}).toArray(function(err, docs) {
-            if(err) throw err;
-            res.json(docs);
-        });
-    });
-
-    app.get('/delete/:ids', function(req, res){
-        var books = req.params.ids.split(',');
-        books.forEach(function(bookItem, books) {
-            dbCollection.remove({_id: ObjectID(bookItem)});
-        });
-        res.send("Books deleted");
-
     });
 
     app.listen(8083);
