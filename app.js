@@ -10,10 +10,17 @@ MongoClient.connect('mongodb://localhost:27017/crudapp', function(err, db){
 
     var dbCollection = db.collection('books');
 
-    app.use(express.static(__dirname + '/public'));
-    app.use(express.static(__dirname + '/public/view'));
+    app.use(express.static('public'));
+
+    app.set('views', __dirname+'/views');
+    app.set('views engine', 'jade');
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
+
+    app.get('/', function (req, res) {
+        res.render('index');
+    });
 
     app.get('/getbook', function(req, res){
         var query = {};

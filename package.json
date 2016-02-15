@@ -1,0 +1,26 @@
+{
+  "name": "book-lib",
+"version": "1.0.0",
+"description": "small CRUD app",
+"main": "app.js",
+"dependencies": {
+"body-parser": "^1.14.1",
+"express": "^4.13.3",
+"jade": "^1.11.0",
+"mongodb": "^2.0.46"
+},
+"devDependencies": {},
+"scripts": {
+"test": "node app.js"
+},
+"repository": {
+"type": "git",
+"url": "git+https://github.com/ol1001/book-lib.git"
+},
+"author": "ol1001",
+"license": "ISC",
+"bugs": {
+"url": "https://github.com/ol1001/book-lib/issues"
+},
+"homepage": "https://github.com/ol1001/book-lib#readme"
+}
